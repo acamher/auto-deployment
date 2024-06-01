@@ -39,6 +39,8 @@ class Raspi:
         self.slot_number = 0                        # Slot number to deploy
         self.deploy_lat = 0.0                       # Target latitude
         self.deploy_lon = 0.0                       # Target longitude
+        self.gps_slot_1 = False                     # Report if there is a gps in slot 1 for auto-deployment
+        self.gps_slot_2 = False                     # Report if there is a gps in slot 2 for auto-deployment
 
         #MAVROS VARIABLES
         self.altitude = 0.0
@@ -167,11 +169,7 @@ class Raspi:
     #    self.rcout6 = int(rc_msg.channels[5])
     #    self.rcout7 = int(rc_msg.channels[6])
     #    self.rcout8 = int(rc_msg.channels[7])
-#
-    #    self.rcout_cam = self.rcout7%5
-    #    self.rcout7-=self.rcout_cam
-    #    self.pitch_control(self.rcout7)
-    #    self.yaw_control(self.rcout8)
+    #    self.gps_configuration_report()
 
     # def pitch_control(self,val):
     #     self.pwm.set_servo_pulsewidth(self.pin_gimb_pitch, val) 
@@ -299,54 +297,51 @@ class Raspi:
                 self.control = self.VIDEO_SWITCHER_SWC
 
     def servo_behaviour(self):
-                            #CHASER 1 Y 2
+        #CHASER 1 Y 2
+        if self.RAW_CHAN1_RAW < 1300:  ###OPEN SERVO2 AND CLOSE SERVO1
+            if self.servo1open == True:  
+                self.move(self.pin_servo1,self.close1)
+                self.servo1open = False
+            if self.servo2open == False:
+                self.move(self.pin_servo2,self.open2)
+                self.servo2open = True
+        elif self.RAW_CHAN1_RAW > 1700: ###OPEN SERVO1 AND CLOSE SERVO2
+            if self.servo1open == False:
+                self.move(self.pin_servo1,self.open1)
+                self.servo1open = True
+            if self.servo2open == True:
+                self.move(self.pin_servo2,self.close2)
+                self.servo2open = False
+        else:                           ####CLOSE BOTH SERVOS
+            if self.servo1open == True:
+                self.move(self.pin_servo1,self.close1)
+                self.servo1open = False
+            if self.servo2open == True:
+                self.move(self.pin_servo2,self.close2)
+                self.servo2open = False
 
-                    if self.RAW_CHAN1_RAW < 1300:  ###OPEN SERVO2 AND CLOSE SERVO1
-                        if self.servo1open == True:  
-                            self.move(self.pin_servo1,self.close1)
-                            self.servo1open = False
-                        if self.servo2open == False:
-                            self.move(self.pin_servo2,self.open2)
-                            self.servo2open = True
-                    elif self.RAW_CHAN1_RAW > 1700: ###OPEN SERVO1 AND CLOSE SERVO2
-                        if self.servo1open == False:
-                            self.move(self.pin_servo1,self.open1)
-                            self.servo1open = True
-                        if self.servo2open == True:
-                            self.move(self.pin_servo2,self.close2)
-                            self.servo2open = False
-                    else:                           ####CLOSE BOTH SERVOS
-                        if self.servo1open == True:
-                            self.move(self.pin_servo1,self.close1)
-                            self.servo1open = False
-                        if self.servo2open == True:
-                            self.move(self.pin_servo2,self.close2)
-                            self.servo2open = False
-
-
-                    #CHASER 3 Y 4
-
-                    if self.RAW_CHAN2_RAW < 1300: ###OPEN SERVO4 AND CLOSE SERVO3
-                        if self.servo3open == True:
-                            self.move(self.pin_servo3,self.close3)
-                            self.servo3open = False
-                        if self.servo4open == False:
-                            self.move(self.pin_servo4,self.open4)
-                            self.servo4open = True
-                    elif self.RAW_CHAN2_RAW > 1700: ###OPEN SERVO3 AND CLOSE SERVO4
-                        if self.servo3open == False:
-                            self.move(self.pin_servo3,self.open3)
-                            self.servo3open = True
-                        if self.servo4open == True:
-                            self.move(self.pin_servo4,self.close4)
-                            self.servo4open = False
-                    else:                           ###CLOSE BOTH SERVOS
-                        if self.servo3open == True: 
-                            self.move(self.pin_servo3,self.close3)
-                            self.servo3open = False
-                        if self.servo4open == True:
-                            self.move(self.pin_servo4,self.close4)
-                            self.servo4open = False
+        #CHASER 3 Y 4
+        if self.RAW_CHAN2_RAW < 1300: ###OPEN SERVO4 AND CLOSE SERVO3
+            if self.servo3open == True:
+                self.move(self.pin_servo3,self.close3)
+                self.servo3open = False
+            if self.servo4open == False:
+                self.move(self.pin_servo4,self.open4)
+                self.servo4open = True
+        elif self.RAW_CHAN2_RAW > 1700: ###OPEN SERVO3 AND CLOSE SERVO4
+            if self.servo3open == False:
+                self.move(self.pin_servo3,self.open3)
+                self.servo3open = True
+            if self.servo4open == True:
+                self.move(self.pin_servo4,self.close4)
+                self.servo4open = False
+        else:                           ###CLOSE BOTH SERVOS
+            if self.servo3open == True: 
+                self.move(self.pin_servo3,self.close3)
+                self.servo3open = False
+            if self.servo4open == True:
+                self.move(self.pin_servo4,self.close4)
+                self.servo4open = False
 
     # def gimbal_control(self):
     #     self.pitch_control(self.pitch_horizontal)
@@ -490,10 +485,42 @@ def coordinates_to_meters(latitude1, longitude1, latitude2, longitude2):
 
     return earth_diameter_meters * math.asin(math.sqrt(value))
 
+# MASI24
+# Receives signal from rcout7 and store state of both auto-deployment slots.
+def gps_configuration_report():
+    if self.rcout7 == 1:
+        self.gps_slot_1 = True
+        self.gps_slot_2 = False
+    elif self.rcout7 == 2:
+        self.gps_slot_1 = False
+        self.gps_slot_2 = True
+    elif self.rcout7 == 3:
+        self.gps_slot_1 = True
+        self.gps_slot_2 = True
+    else:
+        self.gps_slot_1 = False
+        self.gps_slot_2 = False
+
+# MASI24
+# Reports state of both auto-deployment slots using rcout8
+def gps_launched_report(): 
+    if (self.gps_slot_1 == True) and (self.gps_slot_2 == False): deploy_report = 1
+    elif (self.gps_slot_1 == False) and (self.gps_slot_2 == True): deploy_report = 2
+    elif (self.gps_slot_1 == True) and (self.gps_slot_2 == True): deploy_report = 3
+    else: deploy_report = 0
+    # Write on rcout8
+    rc_msg.channels[7] = int(deploy_report)
+
+# MASI24
+def auto_deploy_action():
+    if self.gps_slot_1 == True: print("Deploy slot 1")
+    elif self.gps_slot_2 == True: print("Deploy slot 2")
+    else: print("No gps on slots")
+
 """
 [MASI24] This function computes the following equation:
     1) x = v_x * t
-    2) y = H + v_y*t + 0.5*m*g*t^2
+    2) y = H + v_y*t + 0.5*g*t^2
 """
 def travel_release_distance ( speed, height ):
     time_to_floor = math.sqrt( (2 * height)/(9.8) )
