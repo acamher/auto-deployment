@@ -166,9 +166,6 @@ class Raspi:
     #   self.rcout4 = int(rc_msg.channels[3])
     #   self.rcout5 = int(rc_msg.channels[4])
     #   self.rcout6 = int(rc_msg.channels[5])
-    #   self.rcout7 = int(rc_msg.channels[6])
-    #   self.rcout8 = int(rc_msg.channels[7])
-    #   self.gps_configuration_report()
 
     #   # MASI 24: slots configuration report
     #   match self.rcout7:
@@ -506,22 +503,6 @@ class Raspi:
                         self.deploy()
                     else:
                         auto_deployment_report.publish(rc_msg.channels[8] = 0)  # Not deploying
-    
-    # MASI24
-    # Receives signal from rcout7 and store state of both auto-deployment slots.
-    def gps_configuration_report(self):
-        if self.rcout7 == 1:
-            self.gps_slot_1 = True
-            self.gps_slot_2 = False
-        elif self.rcout7 == 2:
-            self.gps_slot_1 = False
-            self.gps_slot_2 = True
-        elif self.rcout7 == 3:
-            self.gps_slot_1 = True
-            self.gps_slot_2 = True
-        else:
-            self.gps_slot_1 = False
-            self.gps_slot_2 = False
 
 # MASI24
 def degree_to_radian(degrees):
