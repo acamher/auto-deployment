@@ -445,9 +445,12 @@ class Raspi:
     
     # MASI24
     def load_autodeployment(self, WpList):
-        self.deploy_lat = WpList.waypoints[1].x_lat
-        self.deploy_lon = WpList.waypoints[1].y_long
-        self.auto_deployment_mode = True
+        if len(WpList.waypoints >= 2): 
+            self.deploy_lat = WpList.waypoints[1].x_lat
+            self.deploy_lon = WpList.waypoints[1].y_long
+            self.auto_deployment_mode = True
+        else:
+            self.auto_deployment_mode = False
     
     # MASI 24
     def deploy(self):
