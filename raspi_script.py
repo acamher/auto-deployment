@@ -40,6 +40,7 @@ class Raspi:
         self.deploy_lon = 0.0                   # Target longitude
         self.slot_1 = False                     # Report if there is a gps in slot 1 for auto-deployment
         self.slot_2 = False                     # Report if there is a gps in slot 2 for auto-deployment
+        self.auto_deploy = False                # True if we want to deploy know
 
         #MAVROS VARIABLES
         self.altitude = 0.0
@@ -354,6 +355,20 @@ class Raspi:
             if self.servo4open == True:
                 self.move(self.pin_servo4,self.close4)
                 self.servo4open = False
+        
+        # AUTO-DEPLOYMENT behaviour
+        if (self.auto_deployment_mode == True) and (self.deploy == True):
+            # Select slot
+            if (self.slot1 == True) and (self.servo1open == False):
+                self.move(self.pin_servo1,self.open1)
+                self.servo1open = True
+                auto_deployment_report.publish(rc_msg.channels[8] = 1)      # Report the deployment
+            elif (self.slot2 == True) and (self.servo2open == False):
+                self.move(self.pin_servo2,self.open2)
+                self.servo2open = True
+                auto_deployment_report.publish(rc_msg.channels[8] = 1)      # Report the deployment
+            else:
+                auto_deployment_report.publish(rc_msg.channels[8] = 0)      # Not deployed
 
     def gimbal_control(self):
         self.pitch_control(self.pitch_horizontal)
@@ -452,20 +467,6 @@ class Raspi:
             self.auto_deployment_mode = True
         else:
             self.auto_deployment_mode = False
-    
-    # MASI 24
-    def deploy(self):
-        # Select slot
-        if self.slot1 == True:
-            self.move(self.pin_servo1,self.open1)
-            self.servo1open = True
-            auto_deployment_report.publish(rc_msg.channels[8] = 1)      # Report the deployment
-        elif self.slot2 == True:
-            self.move(self.pin_servo2,self.open2)
-            self.servo2open = True
-            auto_deployment_report.publish(rc_msg.channels[8] = 1)      # Report the deployment
-        else:
-            print("There is no chaser loaded")
 
     # MASI 24
     def slot_report(self):
@@ -496,7 +497,7 @@ class Raspi:
                 if (real_dist > estimated_distance_loop_1):
                     auto_deployment_report.publish(rc_msg.channels[8] = 0)  # Not deploying
                 if (real_dist <= estimated_distance_loop_0):
-                    self.deploy()
+                    self.auto_deploy = True
                 else:
                     # Calculate errors
                     error_loop_0 = real_dist - estimated_distance_loop_0
@@ -504,7 +505,7 @@ class Raspi:
                     print("Distance is: " + str(error_loop_0))
 
                     if (error_loop_0 <= error_loop_1):
-                        self.deploy()
+                        self.auto_deploy = True
                     else:
                         auto_deployment_report.publish(rc_msg.channels[8] = 0)  # Not deploying
 
