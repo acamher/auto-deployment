@@ -91,21 +91,21 @@ class Raspi:
         self.pin_gimb_yaw = 13
         self.pin_switch = 17
 
-        #self.pwm = pigpio.pi()
-        #self.pwm.set_mode(self.pin_servo1, pigpio.OUTPUT)
-        #self.pwm.set_mode(self.pin_servo2, pigpio.OUTPUT)
-        #self.pwm.set_mode(self.pin_servo3, pigpio.OUTPUT)
-        #self.pwm.set_mode(self.pin_servo4, pigpio.OUTPUT)
-        #self.pwm.set_mode(self.pin_gimb_pitch, pigpio.OUTPUT)
-        #self.pwm.set_mode(self.pin_gimb_yaw, pigpio.OUTPUT)
-        #self.pwm.set_mode(self.pin_switch, pigpio.OUTPUT)
-        #self.pwm.set_PWM_frequency( self.pin_servo1, 50 )
-        #self.pwm.set_PWM_frequency( self.pin_servo2, 50 )
-        #self.pwm.set_PWM_frequency( self.pin_servo3, 50 )
-        #self.pwm.set_PWM_frequency( self.pin_servo4, 50 )
-        #self.pwm.set_PWM_frequency( self.pin_gimb_pitch, 50 )
-        #self.pwm.set_PWM_frequency( self.pin_gimb_yaw, 50 )
-        #self.pwm.set_PWM_frequency( self.pin_switch, 50 )
+        self.pwm = pigpio.pi()
+        self.pwm.set_mode(self.pin_servo1, pigpio.OUTPUT)
+        self.pwm.set_mode(self.pin_servo2, pigpio.OUTPUT)
+        self.pwm.set_mode(self.pin_servo3, pigpio.OUTPUT)
+        self.pwm.set_mode(self.pin_servo4, pigpio.OUTPUT)
+        self.pwm.set_mode(self.pin_gimb_pitch, pigpio.OUTPUT)
+        self.pwm.set_mode(self.pin_gimb_yaw, pigpio.OUTPUT)
+        self.pwm.set_mode(self.pin_switch, pigpio.OUTPUT)
+        self.pwm.set_PWM_frequency( self.pin_servo1, 50 )
+        self.pwm.set_PWM_frequency( self.pin_servo2, 50 )
+        self.pwm.set_PWM_frequency( self.pin_servo3, 50 )
+        self.pwm.set_PWM_frequency( self.pin_servo4, 50 )
+        self.pwm.set_PWM_frequency( self.pin_gimb_pitch, 50 )
+        self.pwm.set_PWM_frequency( self.pin_gimb_yaw, 50 )
+        self.pwm.set_PWM_frequency( self.pin_switch, 50 )
         self.open1 = 1225
         self.close1 = 1000
         self.open2 = 1385
@@ -138,70 +138,70 @@ class Raspi:
             self.longitude = 17
             self.latitude = 17
 
-    #def rc_callback(self, rc_msg):
-    #    self.rc1 = int(rc_msg.channels[0])
-    #    self.rc2 = int(rc_msg.channels[1])
-    #    self.rc3 = int(rc_msg.channels[2])
-    #    self.rc4 = int(rc_msg.channels[3])
-    #    self.rc5 = int(rc_msg.channels[4])
-    #    self.rc6 = int(rc_msg.channels[5])
-    #    self.rc7 = int(rc_msg.channels[6])
-    #    self.rc8 = int(rc_msg.channels[7])
-    #    self.rc9 = int(rc_msg.channels[8])
-    #    self.rc10 = int(rc_msg.channels[9])
-    #    self.rc11 = int(rc_msg.channels[10])
-    #    self.rc12 = int(rc_msg.channels[11])
-    #    self.rc13 = int(rc_msg.channels[12])
-    #    self.rc14 = int(rc_msg.channels[13])
-    #    self.rc15 = int(rc_msg.channels[14])
-    #    self.rc16 = int(rc_msg.channels[15])
-    #    self.RAW_CHAN1_RAW = self.rc6  #LAUNCH1
-    #    self.RAW_CHAN2_RAW = self.rc7  #LAUNCH2
-    #    self.RAW_CHAN3_RAW = self.rc8  #ENVOLVENTE
+    def rc_callback(self, rc_msg):
+        self.rc1 = int(rc_msg.channels[0])
+        self.rc2 = int(rc_msg.channels[1])
+        self.rc3 = int(rc_msg.channels[2])
+        self.rc4 = int(rc_msg.channels[3])
+        self.rc5 = int(rc_msg.channels[4])
+        self.rc6 = int(rc_msg.channels[5])
+        self.rc7 = int(rc_msg.channels[6])
+        self.rc8 = int(rc_msg.channels[7])
+        self.rc9 = int(rc_msg.channels[8])
+        self.rc10 = int(rc_msg.channels[9])
+        self.rc11 = int(rc_msg.channels[10])
+        self.rc12 = int(rc_msg.channels[11])
+        self.rc13 = int(rc_msg.channels[12])
+        self.rc14 = int(rc_msg.channels[13])
+        self.rc15 = int(rc_msg.channels[14])
+        self.rc16 = int(rc_msg.channels[15])
+        self.RAW_CHAN1_RAW = self.rc6  #LAUNCH1
+        self.RAW_CHAN2_RAW = self.rc7  #LAUNCH2
+        self.RAW_CHAN3_RAW = self.rc8  #ENVOLVENTE
 
-    #def rcout_callback(self, rc_msg):
-    #   self.rcout1 = int(rc_msg.channels[0])
-    #   self.rcout2 = int(rc_msg.channels[1])
-    #   self.rcout3 = int(rc_msg.channels[2])
-    #   self.rcout4 = int(rc_msg.channels[3])
-    #   self.rcout5 = int(rc_msg.channels[4])
-    #   self.rcout6 = int(rc_msg.channels[5])
-    #   self.rcout7 = int(rc_msg.channels[6])
+    def rcout_callback(self, rc_msg):
+       self.rcout1 = int(rc_msg.channels[0])
+       self.rcout2 = int(rc_msg.channels[1])
+       self.rcout3 = int(rc_msg.channels[2])
+       self.rcout4 = int(rc_msg.channels[3])
+       self.rcout5 = int(rc_msg.channels[4])
+       self.rcout6 = int(rc_msg.channels[5])
+       self.rcout7 = int(rc_msg.channels[6])
 
-    #   # MASI 24: slots configuration report
-    #   match self.rcout7:
-    #       case 0:
-    #           self.slot1 = False
-    #           self.slot2 = False
-    #       case 1:
-    #           self.slot1 = True
-    #           self.slot2 = False
-    #       case 2:
-    #           self.slot1 = False
-    #           self.slot2 = True
-    #       case 3:
-    #           self.slot1 = True
-    #           self.slot2 = True
+       # MASI 24: slots configuration report
+       match self.rcout7:
+           case 0:
+               self.slot1 = False
+               self.slot2 = False
+           case 1:
+               self.slot1 = True
+               self.slot2 = False
+           case 2:
+               self.slot1 = False
+               self.slot2 = True
+           case 3:
+               self.slot1 = True
+               self.slot2 = True
 
-    # def pitch_control(self,val):
-    #     self.pwm.set_servo_pulsewidth(self.pin_gimb_pitch, val) 
+    def pitch_control(self,val):
+        self.pwm.set_servo_pulsewidth(self.pin_gimb_pitch, val) 
 
     def yaw_control(self,val): 
         self.pwm.set_servo_pulsewidth(self.pin_gimb_yaw, val) 
 
     def move(self,servo, val):
-        #self.pwm.set_servo_pulsewidth(servo, val) 
+        self.pwm.set_servo_pulsewidth(servo, val) 
         time.sleep(0.8)
-        #self.pwm.set_servo_pulsewidth(servo, 0)
+        self.pwm.set_servo_pulsewidth(servo, 0)
    
     def compass_hdg_callback(self,compass_hdg_msg):
         try:
-            #self.hdg = int(compass_hdg_msg.data)
+            self.hdg = int(compass_hdg_msg.data)
             self.hdg = int(compass_hdg_msg)
         except:
             self.hdg= 0
 
-        #print(self.hdg)
+        print(self.hdg)
 
     def battery_callback(self,battery_msg):
         try:
@@ -212,8 +212,8 @@ class Raspi:
             self.battery_vol = 24
 
     def launcher_old(self):
-        # self.move(self.pin_servo1,self.open1)
-        # self.move(self.pin_servo2,self.open2)
+        self.move(self.pin_servo1,self.open1)
+        self.move(self.pin_servo2,self.open2)
         self.pitch_control(self.pitch_horizontal)
         self.yaw_control(self.yaw_forward)
         while True:
@@ -355,9 +355,9 @@ class Raspi:
                 self.move(self.pin_servo4,self.close4)
                 self.servo4open = False
 
-    # def gimbal_control(self):
-    #     self.pitch_control(self.pitch_horizontal)
-    #     self.yaw_control(self.yaw_forward)
+    def gimbal_control(self):
+        self.pitch_control(self.pitch_horizontal)
+        self.yaw_control(self.yaw_forward)
 
     def switcher(self, vid_mod):
         if vid_mod==0:
@@ -440,9 +440,9 @@ class Raspi:
                     except:
                         print("Not valid")
 
-            #if (True):
-            #    self.switcher(self.VIDEO_SWITCHER_SWC)
-            #    self.control = self.VIDEO_SWITCHER_SWC
+            if (True):
+                self.switcher(self.VIDEO_SWITCHER_SWC)
+                self.control = self.VIDEO_SWITCHER_SWC
     
     # MASI24
     def load_autodeployment(self, WpList):
@@ -548,8 +548,8 @@ if not rc_sim:
     position_sub = rospy.Subscriber("/mavros/global_position/local", Odometry, raspi.position_callback)
     navsat_sub = rospy.Subscriber("/mavros/global_position/global", NavSatFix, raspi.navsat_callback)
     hdg_sub = rospy.Subscriber("/mavros/global_position/compass_hdg",Float64, raspi.compass_hdg_callback)
-    #rc_sub = rospy.Subscriber("/mavros/rc/in",RCIn, raspi.rc_callback)
-    #rcout_sub = rospy.Subscriber("/mavros/rc/out",RCOut, raspi.rcout_callback)
+    rc_sub = rospy.Subscriber("/mavros/rc/in",RCIn, raspi.rc_callback)
+    rcout_sub = rospy.Subscriber("/mavros/rc/out",RCOut, raspi.rcout_callback)
     WpList_sub = rospy.Subscriber("/mavros/mission/waypoints", WaypointList, raspi.load_autodeployment)
     auto_deployment_report = rospy.Publisher("/mavros/rc/out",RCOut, queue_size=10)
     rate = rospy.Rate(10)
