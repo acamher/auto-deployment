@@ -166,6 +166,7 @@ class Raspi:
     #   self.rcout4 = int(rc_msg.channels[3])
     #   self.rcout5 = int(rc_msg.channels[4])
     #   self.rcout6 = int(rc_msg.channels[5])
+    #   self.rcout7 = int(rc_msg.channels[6])
 
     #   # MASI 24: slots configuration report
     #   match self.rcout7:
