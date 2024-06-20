@@ -454,20 +454,20 @@ class Raspi:
     
     # MASI 24
     def deploy(self):
-        # Report the deployment
-        auto_deployment_report.publish(rc_msg.channels[8] = 1)
         # Select slot
         if self.slot1 == True:
             self.move(self.pin_servo1,self.open1)
             self.servo1open = True
+            auto_deployment_report.publish(rc_msg.channels[8] = 1)      # Report the deployment
         elif self.slot2 == True:
             self.move(self.pin_servo2,self.open2)
             self.servo2open = True
+            auto_deployment_report.publish(rc_msg.channels[8] = 1)      # Report the deployment
         else:
             print("There is no chaser loaded")
 
     # MASI 24
-    def slot_report():
+    def slot_report(self):
         if (self.slot1 == False) and (self.slot2 == False):
             auto_deployment_report.publish(rc_msg.channels[7] = 0)
         if (self.slot1 == True) and (self.slot2 == False):
@@ -495,7 +495,7 @@ class Raspi:
                 if (real_dist > estimated_distance_loop_1):
                     auto_deployment_report.publish(rc_msg.channels[8] = 0)  # Not deploying
                 if (real_dist <= estimated_distance_loop_0):
-                    deploy()
+                    self.deploy()
                 else:
                     # Calculate errors
                     error_loop_0 = real_dist - estimated_distance_loop_0
@@ -503,7 +503,7 @@ class Raspi:
                     print("Distance is: " + str(error_loop_0))
 
                     if (error_loop_0 <= error_loop_1):
-                        deploy()
+                        self.deploy()
                     else:
                         auto_deployment_report.publish(rc_msg.channels[8] = 0)  # Not deploying
     
@@ -542,12 +542,6 @@ def coordinates_to_meters(latitude1, longitude1, latitude2, longitude2):
     value = (x * x) + (math.cos(latitude1) * math.cos(latitude2) * y * y)
 
     return earth_diameter_meters * math.asin(math.sqrt(value))
-
-# MASI24
-def auto_deploy_action():
-    if self.gps_slot_1 == True: print("Deploy slot 1")
-    elif self.gps_slot_2 == True: print("Deploy slot 2")
-    else: print("No gps on slots")
 
 """
 [MASI24] This function computes the following equation:
